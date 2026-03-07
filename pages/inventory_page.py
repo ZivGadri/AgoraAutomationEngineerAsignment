@@ -44,7 +44,7 @@ class InventoryPage(BasePage):
         
     def go_to_cart(self) -> CartPage:
         """Clicks on the cart icon to navigate to the Cart page."""
-        self.cart_icon.click()
+        self.click(self.cart_icon)
         return CartPage(self.driver)
 
     def add_products_to_cart(self, products: list[str]) -> dict[str, float]:
