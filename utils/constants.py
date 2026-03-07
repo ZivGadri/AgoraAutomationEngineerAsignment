@@ -19,4 +19,4 @@ class APIEndpoints:
 
 class Timeouts:
     """Timeout settings in milliseconds (Playwright's default unit)."""
-    DEFAULT_TIMEOUT_IN_MILLIS = 10000
+    DEFAULT_TIMEOUT_IN_SEC = 10.0
