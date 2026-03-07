@@ -6,9 +6,10 @@ requires-python = ">=3.11"
 
 dependencies = [
     "pytest",
-    "pytest-playwright",  # pulls in playwright as a transitive dependency
     "requests",
     "python-dotenv",
+    "selenium",
+    "webdriver-manager",
 ]
 
 # ---------------------------------------------------------------------------
