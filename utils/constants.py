@@ -18,5 +18,17 @@ class APIEndpoints:
     POSTS: str = "/posts"
 
 class Timeouts:
-    """Timeout settings in milliseconds (Playwright's default unit)."""
+    """Timeout settings in seconds."""
     DEFAULT_TIMEOUT_IN_SEC = 10.0
+    DEFAULT_SLEEP_IN_SEC = 0.7
+
+class TestConstants:
+    """Test related constants - """
+    PRODUCTS_TO_ADD = [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bolt T-Shirt",
+        "Sauce Labs Onesie"
+    ]
+    PRODUCT_TO_REMOVE = "Sauce Labs Bolt T-Shirt"
+    TAX_PERCENTAGE = 8
+    CHECKOUT_COMPLETE_SUCCESS_MSG = "Thank you for your order!"

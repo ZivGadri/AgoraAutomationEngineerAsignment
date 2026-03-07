@@ -20,6 +20,7 @@ Hook overview
 """
 
 import os
+
 import pytest
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -65,7 +66,8 @@ def driver(request):
     the end of the session.
     """
     # Check if there are any UI tests in the current pytest session
-    has_ui_tests = any("tests/ui" in str(item.fspath) for item in request.session.items)
+    # Adjust path checks to handle both absolute paths and cross-platform slash differences
+    has_ui_tests = any("tests" in str(item.fspath) and "ui" in str(item.fspath) for item in request.session.items)
     
     if not has_ui_tests:
         # If no UI tests are running (e.g., we ran 'pytest tests/api'), 
@@ -76,11 +78,11 @@ def driver(request):
     # Use Webdriver Manager (by Boni Garcia) to automatically download 
     # the correct ChromeDriver binary for the local machine's Chrome version.
     service = ChromeService(ChromeDriverManager().install())
-    
+
     options = webdriver.ChromeOptions()
-    options.add_argument("--start-maximized")
-    # Uncomment for headless execution in CI:
-    # options.add_argument("--headless")
+
+    options.add_argument("--window-size=1280,800")
+    options.add_argument("--incognito") # Avoiding Chrome alert from Google Password Manager
     
     driver_instance = webdriver.Chrome(service=service, options=options)
     
@@ -90,7 +92,8 @@ def driver(request):
     yield driver_instance
     
     # Teardown at the end of the entire test session
-    driver_instance.quit()
+    if driver_instance:
+        driver_instance.quit()
 
 
 # ---------------------------------------------------------------------------
@@ -98,7 +101,7 @@ def driver(request):
 # ---------------------------------------------------------------------------
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item, call):
+def pytest_runtest_makereport(item):
     """
     Pytest hook that runs after every phase of a test (setup / call / teardown).
     Takes a screenshot on failure if the test was using the `driver` fixture.
