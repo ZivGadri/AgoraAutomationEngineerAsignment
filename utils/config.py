@@ -9,9 +9,28 @@ Provides safe fallback defaults using the constants module when appropriate.
 """
 
 import os
+import logging
 from dataclasses import dataclass
 
 from utils.constants import URLs
+
+class Logger:
+    """Helper class to configure and retrieve a logger instance per class name."""
+    
+    @staticmethod
+    def get_logger(class_name: str) -> logging.Logger:
+        logger = logging.getLogger(class_name)
+        # Prevent adding duplicate handlers if the logger already exists
+        if not logger.hasHandlers():
+            logger.setLevel(logging.INFO)
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter(
+                fmt="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S"
+            )
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+        return logger
 
 
 @dataclass(frozen=True)
