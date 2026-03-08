@@ -23,12 +23,11 @@ import os
 
 import pytest
 from dotenv import load_dotenv
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 
-from framework.api import PostsClient
-from framework.utils import Config
+from framework.drivers.driver_factory import DriverFactory
+
+from framework.api.api_constants import APIUrl
+from framework.api.clients.posts_client import PostsClient
 
 # Load environment variables from .env once at collection time.
 # This makes all variables available via os.getenv() / Config() throughout
@@ -41,15 +40,9 @@ load_dotenv()
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="session")
-def config() -> Config:
-    """Loads and returns the application configuration for the entire test session."""
-    return Config()
-
-
-@pytest.fixture(scope="session")
-def posts_client(config: Config) -> PostsClient:
+def posts_client() -> PostsClient:
     """Provides a configured PostsClient instance for the entire test session."""
-    return PostsClient(base_url=config.BASE_API_URL)
+    return PostsClient(base_url=APIUrl.API_BASE_URL)
 
 
 # ---------------------------------------------------------------------------
@@ -75,19 +68,8 @@ def driver(request):
         yield None
         return
 
-    # Use Webdriver Manager (by Boni Garcia) to automatically download 
-    # the correct ChromeDriver binary for the local machine's Chrome version.
-    service = ChromeService(ChromeDriverManager().install())
-
-    options = webdriver.ChromeOptions()
-
-    options.add_argument("--window-size=1280,800")
-    options.add_argument("--incognito") # Avoiding Chrome alert from Google Password Manager
-    
-    driver_instance = webdriver.Chrome(service=service, options=options)
-    
-    # Implicit wait as a fallback, though explicit waits in SeleniumWrapper are preferred.
-    driver_instance.implicitly_wait(5)
+    # Use the DriverFactory to instantiate and configure the WebDriver
+    driver_instance = DriverFactory.get_chrome_driver()
     
     yield driver_instance
     
