@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from pages.base_page import BasePage, FindBy
-from pages.inventory_page import InventoryPage
-from pages.base_page import BasePage, FindBy
+from framework.ui.pages.inventory_page import InventoryPage
+from framework.ui.selenium_wrapper import SeleniumWrapper
+from framework.ui.element_init import find_by as FindBy
 
-class LoginPage(BasePage):
+class LoginPage(SeleniumWrapper):
     """Page Object for the SauceDemo Login Page."""
     
     @FindBy(By.ID, "user-name")

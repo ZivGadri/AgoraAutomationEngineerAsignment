@@ -1,5 +1,5 @@
 """
-utils/config.py
+utils/helper_functions.py
 
 Centralised configuration loader.
 Reads all environment variables from the environment (or `.env` file via
@@ -7,16 +7,13 @@ python-dotenv in conftest.py) and exposes them as typed constants.
 
 Provides safe fallback defaults using the constants module when appropriate.
 """
-
-import os
+import datetime
 import logging
-from dataclasses import dataclass
-
-from utils.constants import URLs
+import pytz
 
 class Logger:
     """Helper class to configure and retrieve a logger instance per class name."""
-    
+
     @staticmethod
     def get_logger(class_name: str) -> logging.Logger:
         logger = logging.getLogger(class_name)
@@ -33,19 +30,16 @@ class Logger:
         return logger
 
 
-@dataclass(frozen=True)
-class Config:
-    """
-    Project configuration loaded from environment variables.
-    """
+class DateTime:
+    """Helper class to configure and retrieve a datetime instance per class name."""
 
-    # UI Configurations
-    BASE_UI_URL: str = os.getenv("BASE_UI_URL", URLs.SAUCE_DEMO_BASE_URL)
-    UI_USERNAME: str = os.getenv("UI_USERNAME", "standard_user")
-    UI_PASSWORD: str = os.getenv("UI_PASSWORD", "secret_sauce")
+    @staticmethod
+    def get_current_datetime() -> str:
+        jerusalem_tz = pytz.timezone('Asia/Jerusalem')
+        now_localized = datetime.datetime.now(jerusalem_tz)
+        time_part = now_localized.strftime("%#d/%#m/%Y - %H:%M:%S")
+        offset_str = now_localized.strftime('%z')
+        formatted_offset = f"UTC{offset_str[:-2]}:{offset_str[-2:]}"
+        final_output = f"{time_part} {formatted_offset}"
 
-    # API Configurations
-    BASE_API_URL: str = os.getenv("BASE_API_URL", URLs.API_BASE_URL)
-
-    # Feature Flags
-    TESTRAIL_ENABLED: bool = os.getenv("TESTRAIL_ENABLED", "false").lower() == "true"
+        return final_output

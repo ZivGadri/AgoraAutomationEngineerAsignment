@@ -10,8 +10,10 @@ dependencies = [
     { name = "pytest" },
     { name = "pytest-check" },
     { name = "python-dotenv" },
+    { name = "pytz" },
     { name = "requests" },
     { name = "selenium" },
+    { name = "testrail-api" },
     { name = "webdriver-manager" },
 ]
 
@@ -20,8 +22,10 @@ requires-dist = [
     { name = "pytest" },
     { name = "pytest-check", specifier = ">=2.4.1" },
     { name = "python-dotenv" },
+    { name = "pytz", specifier = ">=0.2.0" },
     { name = "requests" },
     { name = "selenium" },
+    { name = "testrail-api", specifier = ">=1.13.4" },
     { name = "webdriver-manager" },
 ]
 
@@ -273,6 +277,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pytz"
+version = "2026.1.post1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/db/b8721d71d945e6a8ac63c0fc900b2067181dbb50805958d4d4661cf7d277/pytz-2026.1.post1.tar.gz", hash = "sha256:3378dde6a0c3d26719182142c56e60c7f9af7e968076f31aae569d72a0358ee1", size = 321088, upload-time = "2026-03-03T07:47:50.683Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/99/781fe0c827be2742bcc775efefccb3b048a3a9c6ce9aec0cbf4a101677e5/pytz-2026.1.post1-py2.py3-none-any.whl", hash = "sha256:f2fd16142fda348286a75e1a524be810bb05d444e5a081f37f7affc635035f7a", size = 510489, upload-time = "2026-03-03T07:47:49.167Z" },
+]
+
+[[package]]
 name = "requests"
 version = "2.32.5"
 source = { registry = "https://pypi.org/simple" }
@@ -320,6 +333,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e8/c4/ba2f8066cceb6f23394729afe52f3bf7adec04bf9ed2c820b39e19299111/sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88", size = 30594, upload-time = "2021-05-16T22:03:42.897Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0", size = 29575, upload-time = "2021-05-16T22:03:41.177Z" },
+]
+
+[[package]]
+name = "testrail-api"
+version = "1.13.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/bb/5a12a8cb876edc300f9a21f94d4ab79e0380aab48466560263bff8ffda84/testrail_api-1.13.6.tar.gz", hash = "sha256:e9ade5aa08f8a98b6aad03d8e3c8295ad09f8880978ac2c822637668dce45cc8", size = 43111, upload-time = "2026-01-16T12:51:48.751Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/90/0d/876ddca3da3a735262865c05e01dd93288811c19bcca3f9ad13c9860d885/testrail_api-1.13.6-py3-none-any.whl", hash = "sha256:5bd623cb6190059e4e1cab9727914890243b7a2f01e6abdf8f1bb7ed9d591b6a", size = 20537, upload-time = "2026-01-16T12:51:47.518Z" },
 ]
 
 [[package]]

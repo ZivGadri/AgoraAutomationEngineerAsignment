@@ -10,7 +10,9 @@ dependencies = [
     "python-dotenv",
     "selenium",
     "webdriver-manager",
-    "pytest-check>=2.4.1"
+    "pytest-check>=2.4.1",
+    "testrail-api>=1.13.4",
+    "pytz>=0.2.0"
 ]
 
 # ---------------------------------------------------------------------------

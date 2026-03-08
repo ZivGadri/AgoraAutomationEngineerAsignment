@@ -1,13 +1,12 @@
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from pages.base_page import BasePage, FindBy, FindAll
-from pages.cart_page import CartPage
-from pages.base_page import BasePage, FindBy
-from utils.config import Logger
+from framework.ui.pages.cart_page import CartPage
+from framework.ui.selenium_wrapper import SeleniumWrapper
+from framework.ui.element_init import find_by as FindBy, find_all as FindAll
 
 
-class InventoryPage(BasePage):
+class InventoryPage(SeleniumWrapper):
     """Page Object for the SauceDemo Inventory Page."""
 
     

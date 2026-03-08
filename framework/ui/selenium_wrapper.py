@@ -1,46 +1,19 @@
 """
-pages/base_page.py
+pages/selenium_wrapper.py
 
 Abstract base class for all Page Objects.
 Encapsulates common Selenium WebDriver browser interactions.
 """
 import time
-from typing import List, Callable, Any
+from typing import List
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils.constants import Timeouts, TestConstants
-from utils.config import Logger
+from framework.ui.ui_constants import Timeouts
+from framework.utils.helper_functions import Logger
 
-def FindBy(by: str, value: str) -> Callable[[Callable[..., Any]], property]:
-    """
-    Decorate a dummy method to turn it into a property returning a single resolved WebElement.
-    """
-    def decorator(func: Callable[..., Any]) -> property:
-        @property
-        def wrapper(self: Any) -> WebElement:
-            locator = (by, value)
-            return self.wait.until(EC.visibility_of_element_located(locator))
-        return wrapper
-    return decorator
-
-
-def FindAll(by: str, value: str) -> Callable[[Callable[..., Any]], property]:
-    """
-    Decorate a dummy method to turn it into a property returning a list of resolved WebElements.
-    """
-    def decorator(func: Callable[..., Any]) -> property:
-        @property
-        def wrapper(self: Any) -> List[WebElement]:
-            locator = (by, value)
-            return self.wait.until(EC.presence_of_all_elements_located(locator))
-        return wrapper
-    return decorator
-
-
-
-class BasePage:
+class SeleniumWrapper:
     """
     Base class for all Page Objects in the framework.
     Provides robust wrapper methods around common Selenium interactions,
