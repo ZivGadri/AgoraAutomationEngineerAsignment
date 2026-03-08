@@ -1,8 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from pages.base_page import BasePage, FindBy
+from framework.ui.element_init import find_by as FindBy
+from framework.ui.selenium_wrapper import SeleniumWrapper
 
-class CheckoutCompletePage(BasePage):
+
+class CheckoutCompletePage(SeleniumWrapper):
     """Page Object for the Checkout Complete (Success) Page."""
     
     @FindBy(By.CLASS_NAME, "complete-header")

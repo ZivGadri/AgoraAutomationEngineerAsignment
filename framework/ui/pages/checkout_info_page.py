@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from pages.base_page import BasePage, FindBy
-from pages.checkout_overview_page import CheckoutOverviewPage
-from pages.base_page import BasePage, FindBy
+from framework.ui.pages.checkout_overview_page import CheckoutOverviewPage
+from framework.ui.selenium_wrapper import SeleniumWrapper
+from framework.ui.element_init import find_by as FindBy
 
-class CheckoutInfoPage(BasePage):
+class CheckoutInfoPage(SeleniumWrapper):
     """Page Object for the Checkout Information step (Step 1)."""
     
     @FindBy(By.ID, "first-name")

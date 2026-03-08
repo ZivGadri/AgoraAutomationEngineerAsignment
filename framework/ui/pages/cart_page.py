@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from pages.base_page import BasePage, FindBy, FindAll
-from pages.checkout_info_page import CheckoutInfoPage
-from pages.base_page import BasePage, FindBy
+from framework.ui.element_init import find_by as FindBy, find_all as FindAll
+from framework.ui.pages.checkout_info_page import CheckoutInfoPage
+from framework.ui.selenium_wrapper import SeleniumWrapper
 
-class CartPage(BasePage):
+class CartPage(SeleniumWrapper):
     """Page Object for the SauceDemo Cart Page."""
 
     @FindAll(By.XPATH, "//div[@class='cart_item']")
