@@ -1,0 +1,43 @@
+# .github/workflows/code-quality-check.yml
+# GitHub Actions Code Quality Check pipeline.
+# Installs UV, syncs dependencies, and runs Flake8 and pytest collection
+# to catch syntax errors or unresolved imports on non-main branches.
+
+name: Code Quality Check
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install Dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          uvx flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          uvx flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=.venv
+
+      - name: Verify Test Collection (Syntax Check)
+        run: |
+          # Run pytest collection to ensure all test files are importable and have valid syntax
+          uv run pytest --collect-only
