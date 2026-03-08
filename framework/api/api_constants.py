@@ -5,7 +5,7 @@ API related constants and env vars, including default URLs, API endpoints, and m
 Values here are static and not expected to change on runtime.
 """
 
-class URLs:
+class APIUrl:
     """URLs for the project."""
     API_BASE_URL: str = "https://jsonplaceholder.typicode.com"
 
