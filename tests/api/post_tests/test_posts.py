@@ -29,7 +29,7 @@ def context():
 
 @TestMarkers.CASE_ID("2001")
 @TestMarkers.TEST_NAME("API - Create New Post successfully")
-@TestMarkers.DEPENDENCY(name="Login")
+@TestMarkers.DEPENDENCY(name="Create post")
 @TestMarkers.ORDER(1)
 def test_create_post(posts_client, context):
     """
@@ -70,7 +70,7 @@ def test_create_post(posts_client, context):
 
 @TestMarkers.CASE_ID("2002")
 @TestMarkers.TEST_NAME("API - Retrieve previously created Post")
-@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.DEPENDENCY(depends=["Create post"])
 @TestMarkers.ORDER(2)
 def test_get_post(posts_client, context):
     """
@@ -102,7 +102,7 @@ def test_get_post(posts_client, context):
 
 @TestMarkers.CASE_ID("2003")
 @TestMarkers.TEST_NAME("API - Update existing Post via PUT")
-@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.DEPENDENCY(depends=["Create post"])
 @TestMarkers.ORDER(3)
 def test_update_post(posts_client, context):
     """
@@ -134,7 +134,7 @@ def test_update_post(posts_client, context):
 
 @TestMarkers.CASE_ID("2004")
 @TestMarkers.TEST_NAME("API - Delete an existing Post")
-@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.DEPENDENCY(depends=["Create post"])
 @TestMarkers.ORDER(4)
 def test_delete_post(posts_client, context):
     """
