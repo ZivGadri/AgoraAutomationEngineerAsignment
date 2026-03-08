@@ -12,6 +12,7 @@ class URLs:
 class APIEndpoints:
     """API endpoints for the project."""
     POSTS: str = "/posts"
+    USER_PROFILE: str = "/user/profile"
 
 class APITestConstants:
     """API test constants for the project."""
