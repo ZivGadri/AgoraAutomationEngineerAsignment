@@ -55,7 +55,20 @@ uv run pytest tests/ui
 uv run pytest tests/api
 ```
 
+## Enterprise Testing Capabilities
+
+This framework goes beyond basic automation scripts by implementing several enterprise-grade features designed for massive scalability, traceability, and easy maintenance:
+
+### 1. Extensible Pytest Markers
+Tests are decorated with custom markers (configured in `pyproject.toml` and `helper_functions.py`):
+- `@pytest.mark.case_id("C1001")`: Links the test method directly to a Test Management System (like TestRail). This enables automated result reporting and metric tracking across releases.
+- `@pytest.mark.test_name("E2E Checkout Flow")`: Provides a rich, human-readable name for reporting tools like Allure or Slack, drastically improving log readability.
+- `@pytest.mark.dependency(depends=["test_name"])`: Prevents cascading failures. For instance, if an API `POST` test fails, subsequent `GET`/`PUT`/`DELETE` tests are intelligently skipped, saving execution time and reducing noise in CI failure logs.
+
+### 2. Automated Workspace Hygiene (Screenshot Cleanup)
+UI test failures automatically capture full-page screenshots for debugging. To prevent developers' local environments from bloating over time, a custom `pytest_sessionfinish` hook in `conftest.py` automatically detects local executions and wipes the `screenshots/` directory at the end of the run. When running in CI (GitHub Actions), this hook leaves the directory intact so the images can be uploaded as build artifacts.
+
 ## Continuous Integration
 
 This project includes a GitHub Actions workflow:
-- **Code Quality (`code-quality-check.yml`)**: Runs `flake8` linting and Pytest collection to ensure code health and prevent syntax errors from being merged.
+- **Code Quality (`code-quality-check.yml`)**: Runs `uvx flake8` linting and Pytest collection to ensure code health and prevent syntax errors from being merged, fetching tools on the fly without cluttering the project dependency tree.

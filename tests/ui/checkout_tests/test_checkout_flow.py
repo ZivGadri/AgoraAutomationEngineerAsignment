@@ -24,8 +24,11 @@ import pytest_check as check
 
 from framework.ui.ui_constants import UIUrl
 from framework.utils.data_generator import generate_random_postal_code
+from framework.utils.helper_functions import TestMarkers
 
 
+@TestMarkers.CASE_ID("1001")
+@TestMarkers.TEST_NAME("E2E Checkout Flow - Successful Purchase")
 def test_saucedemo_checkout_flow(setup_test):
     # Use the 'data' object from the fixture
     data = setup_test

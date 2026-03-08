@@ -9,6 +9,8 @@ Provides safe fallback defaults using the constants module when appropriate.
 """
 import datetime
 import logging
+
+import pytest
 import pytz
 
 class Logger:
@@ -43,3 +45,32 @@ class DateTime:
         final_output = f"{time_part} {formatted_offset}"
 
         return final_output
+
+
+class TestMarkers:
+    """
+    Centralized registry of custom Pytest markers used across the framework.
+    These markers provide enterprise-grade test management capabilities by allowing tests
+    to be strictly linked to external test management systems and controlling test execution flow.
+    
+    Available Markers:
+    - CASE_ID: Links the automation test method to its corresponding Test Case ID in an external
+               Test Management Tool (e.g., TestRail `C1004`). 
+               *Benefit*: Enables automated traceability and programmatic result reporting.
+               
+    - TEST_NAME: Provides a highly readable, human-friendly name for a test method.
+                 *Benefit*: Vastly improves the clarity of test reports (like Allure or Slack bots)
+                 instead of relying on raw Python method names like `test_checkout_flow`.
+                 
+    - DEPENDENCY: Controls execution flow by marking tests that depend on the successful execution
+                  of a prior test (via `pytest-dependency`). 
+                  *Benefit*: Prevents cascading failures. For example, if `test_create_post` fails, 
+                  it's useless to run `test_update_post`. The framework will safely SKIP the dependent 
+                  tests, keeping CI logs clean and reducing execution time.
+                  
+    - ORDER: Controls explicit execution order (from `pytest-order`).
+    """
+    CASE_ID = getattr(pytest.mark, "case_id")
+    TEST_NAME = getattr(pytest.mark, "test_name")
+    DEPENDENCY = getattr(pytest.mark, "dependency")
+    ORDER = getattr(pytest.mark, "order")
