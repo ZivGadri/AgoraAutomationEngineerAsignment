@@ -12,7 +12,9 @@ dependencies = [
     "webdriver-manager",
     "pytest-check>=2.4.1",
     "testrail-api>=1.13.4",
-    "pytz>=0.2.0"
+    "pytz>=0.2.0",
+    "pytest-dependency>=0.6.0",
+    "pytest-order>=1.3.0"
 ]
 
 # ---------------------------------------------------------------------------
@@ -30,6 +32,10 @@ addopts = "-v -s"
 markers = [
     "ui: End-to-end UI tests against SauceDemo",
     "api: API tests against JSONPlaceholder",
+    "case_id(id): mark test method with TestRail case ID",
+    "test_name(name): mark test method with TestRail test name or a highly readable report name",
+    "dependency(name, scope, depends): mark test with dependency (from pytest-dependency)",
+    "order(order): mark test with explicit execution order (from pytest-ordering)"
 ]
 
 # ---------------------------------------------------------------------------

@@ -16,6 +16,9 @@ or test context because they operate on the single entity created in Step 1.
 import pytest
 import pytest_check as check
 
+from framework.utils.helper_functions import TestMarkers
+
+
 # Test context to store values (like the created post ID) across the sequential tests
 class TestContext:
     post_id = None
@@ -24,6 +27,10 @@ class TestContext:
 def context():
     return TestContext()
 
+@TestMarkers.CASE_ID("2001")
+@TestMarkers.TEST_NAME("API - Create New Post successfully")
+@TestMarkers.DEPENDENCY(name="Login")
+@TestMarkers.ORDER(1)
 def test_create_post(posts_client, context):
     """
     Step 1: Create a Post
@@ -61,6 +68,10 @@ def test_create_post(posts_client, context):
     context.post_id = post_id
 
 
+@TestMarkers.CASE_ID("2002")
+@TestMarkers.TEST_NAME("API - Retrieve previously created Post")
+@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.ORDER(2)
 def test_get_post(posts_client, context):
     """
     Step 2: Read the Post
@@ -89,6 +100,10 @@ def test_get_post(posts_client, context):
     check.is_true(expected_keys.issubset(actual_keys), f"Response JSON missing required keys. Found: {actual_keys}")
 
 
+@TestMarkers.CASE_ID("2003")
+@TestMarkers.TEST_NAME("API - Update existing Post via PUT")
+@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.ORDER(3)
 def test_update_post(posts_client, context):
     """
     Step 3: Update the Post
@@ -117,6 +132,10 @@ def test_update_post(posts_client, context):
     check.equal(response_json.get("id"), post_id, f"Expected id '{post_id}', got '{response_json.get('id')}'")
 
 
+@TestMarkers.CASE_ID("2004")
+@TestMarkers.TEST_NAME("API - Delete an existing Post")
+@TestMarkers.DEPENDENCY(depends=["test_create_post"])
+@TestMarkers.ORDER(4)
 def test_delete_post(posts_client, context):
     """
     Step 4: Delete the Post
