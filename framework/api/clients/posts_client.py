@@ -1,6 +1,5 @@
 import requests
-from typing import Dict, Any
-from api.base_client import BaseClient
+from framework.api.clients.base_client import BaseClient
 
 
 class PostsClient(BaseClient):
