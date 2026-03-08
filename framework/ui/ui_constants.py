@@ -4,7 +4,7 @@ framework/ui/ui_constants.py
 UI related constants, including
 """
 
-class URLs:
+class UIUrl:
     """Default base URLs for the project."""
     SAUCE_DEMO_BASE_URL: str = "https://www.saucedemo.com"
 
