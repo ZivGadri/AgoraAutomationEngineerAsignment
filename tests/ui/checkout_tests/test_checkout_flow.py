@@ -15,26 +15,26 @@ Test Steps:
      - Total = subtotal + tax
   6. Click Finish and assert the confirmation message
 """
-
+import os
+from collections import namedtuple
 from decimal import Decimal, ROUND_UP
 
 import pytest
 import pytest_check as check
 
-from utils.constants import TestConstants
-from utils.data_generator import generate_random_postal_code
+from framework.ui.ui_constants import UIUrl
+from framework.utils.data_generator import generate_random_postal_code
 
 
 def test_saucedemo_checkout_flow(setup_test):
-
-    # Retrieve the initialized LoginPage from the fixture
-    login_page = setup_test
+    # Use the 'data' object from the fixture
+    data = setup_test
 
     # 1. Login
-    inventory_page = login_page.login("standard_user", "secret_sauce")
+    inventory_page = data.login_page.login(data.login_user, data.login_password)
 
     # 2. Add products to cart and store sum of prices
-    added_products = inventory_page.add_products_to_cart(TestConstants.PRODUCTS_TO_ADD)
+    added_products = inventory_page.add_products_to_cart(data.products_to_add)
 
     # Calculate initial sum
     initial_sum = sum(added_products.values())
@@ -43,24 +43,22 @@ def test_saucedemo_checkout_flow(setup_test):
     cart_page = inventory_page.go_to_cart()
 
     # Remove product from cart
-    cart_page.remove_product(TestConstants.PRODUCT_TO_REMOVE)
+    cart_page.remove_product(data.product_to_remove)
 
     # Calculate the expected sum after removal
-    price_of_removed_item = added_products[TestConstants.PRODUCT_TO_REMOVE.lower()]
-    # expected_subtotal_after_removal = initial_sum - added_products[TestConstants.PRODUCT_TO_REMOVE]
+    price_of_removed_item = added_products[data.product_to_remove.lower()]
 
     # Remove item from dict
-    added_products.pop(TestConstants.PRODUCT_TO_REMOVE.lower())
+    added_products.pop(data.product_to_remove.lower())
 
     # Click checkout
     checkout_info_page = cart_page.click_checkout()
 
     # 4. Enter checkout information
-    postal_code = generate_random_postal_code()
     checkout_info_page.fill_information(
-        first_name="Test",
-        last_name="User",
-        postal_code=postal_code
+        first_name=data.first_name,
+        last_name=data.last_name,
+        postal_code=data.postal_code
     )
 
     # Click continue
@@ -72,7 +70,7 @@ def test_saucedemo_checkout_flow(setup_test):
     actual_total = checkout_overview_page.get_total()
 
     expected_item_total = initial_sum - price_of_removed_item
-    expected_tax = float(Decimal(expected_item_total * (TestConstants.TAX_PERCENTAGE / 100)).quantize(Decimal("0.00"), rounding=ROUND_UP))
+    expected_tax = float(Decimal(expected_item_total * (data.tax_percentage / 100)).quantize(Decimal("0.00"), rounding=ROUND_UP))
     expected_total = float(Decimal(expected_item_total + expected_tax).quantize(Decimal("0.00"), rounding=ROUND_UP))
 
     # 5.1 Verify item total equals the stored sum (minus the removed item)
@@ -86,17 +84,42 @@ def test_saucedemo_checkout_flow(setup_test):
 
     # 6. Final Verification
     actual_checkout_complete_successfully_msg = checkout_complete_page.get_confirmation_message()
-    check.equal(actual_checkout_complete_successfully_msg, TestConstants.CHECKOUT_COMPLETE_SUCCESS_MSG,
+    check.equal(actual_checkout_complete_successfully_msg, data.checkout_complete_success_msg,
                 "Checkout complete message was not as expected")
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_test(driver, config):
+def setup_test(driver):
+    login_user: str = os.getenv("UI_USERNAME", "standard_user")
+    login_password: str = os.getenv("UI_PASSWORD", "secret_sauce")
     # Navigate to SAUCE_DEMO_BASE_URL
-    driver.get(config.BASE_UI_URL)
+    driver.get(UIUrl.SAUCE_DEMO_BASE_URL)
 
     # Instantiate the LoginPage and yield it to the test
-    from pages.login_page import LoginPage
-    login_page = LoginPage(driver)
+    from framework.ui.pages.login_page import LoginPage
 
-    yield login_page
+    # Define the structure for your test data
+    TestData = namedtuple('TestData', [
+        'login_page', 'login_user', 'login_password', 'products_to_add', 'product_to_remove',
+        'tax_percentage', 'checkout_complete_success_msg',
+        'first_name', 'last_name', 'postal_code'
+    ])
+
+    data = TestData(
+        login_page=LoginPage(driver),
+        login_user=login_user,
+        login_password=login_password,
+        products_to_add=[
+            "Sauce Labs Backpack",
+            "Sauce Labs Bolt T-Shirt",
+            "Sauce Labs Onesie",
+        ],
+        product_to_remove = "Sauce Labs Bolt T-Shirt",
+        tax_percentage = 8,
+        checkout_complete_success_msg = "Thank you for your order!",
+        first_name = "Test",
+        last_name = "User",
+        postal_code = generate_random_postal_code()
+    )
+
+    yield data
