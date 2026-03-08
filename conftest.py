@@ -99,3 +99,22 @@ def pytest_runtest_makereport(item):
                 os.makedirs("screenshots", exist_ok=True)
                 screenshot_path = os.path.join("screenshots", f"{item.name}.png")
                 driver_instance.save_screenshot(screenshot_path)
+
+
+def pytest_sessionfinish():
+    """
+    Called after whole test run finished, right before returning the exit status to the system.
+    Cleans up the local screenshots directory if run locally so it doesn't clutter the workspace over time.
+    Keeps screenshots if running inside GitHub Actions.
+    """
+    import shutil
+    
+    # Clean up screenshots if not running in GitHub Actions
+    if os.getenv("GITHUB_ACTIONS") != "true":
+        screenshots_dir = os.path.join(os.getcwd(), "screenshots")
+        if os.path.exists(screenshots_dir):
+            try:
+                shutil.rmtree(screenshots_dir)
+                print(f"\n[Cleanup] Removed local screenshots directory: {screenshots_dir}")
+            except Exception as e:
+                print(f"\n[Cleanup Warning] Failed to clean up screenshots: {e}")
