@@ -27,8 +27,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
-from api.posts_client import PostsClient
-from utils.config import Config
+from framework.api import PostsClient
+from framework.utils import Config
 
 # Load environment variables from .env once at collection time.
 # This makes all variables available via os.getenv() / Config() throughout
@@ -86,7 +86,7 @@ def driver(request):
     
     driver_instance = webdriver.Chrome(service=service, options=options)
     
-    # Implicit wait as a fallback, though explicit waits in BasePage are preferred.
+    # Implicit wait as a fallback, though explicit waits in SeleniumWrapper are preferred.
     driver_instance.implicitly_wait(5)
     
     yield driver_instance
