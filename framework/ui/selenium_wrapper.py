@@ -10,6 +10,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from framework.ui.ui_constants import Timeouts
 from framework.utils.helper_functions import Logger
 
@@ -38,10 +39,18 @@ class SeleniumWrapper:
         Wait for an element to be both present in the DOM and visible.
         Locator should be a tuple like (By.ID, "login-button").
         """
-        if isinstance(locator, tuple):
-            return self.wait.until(EC.visibility_of_element_located(locator))
-        else:
-            return locator
+        try:
+            if isinstance(locator, tuple):
+                self.logger.debug(f"Locating element by {locator[0]}: '{locator[1]}'")
+                return self.wait.until(EC.visibility_of_element_located(locator))
+            else:
+                return locator
+        except TimeoutException as e:
+            self.logger.error(f"TimeoutException finding element: {locator}")
+            raise e
+        except WebDriverException as e:
+            self.logger.error(f"WebDriverException finding element: {locator}. Error: {e}")
+            raise e
 
 
     def find_elements(self, locator: tuple[str, str] | WebElement) -> List[WebElement]:
@@ -55,12 +64,18 @@ class SeleniumWrapper:
 
     def click(self, locator: tuple[str, str] | WebElement, timeout: float = Timeouts.DEFAULT_SLEEP_IN_SEC) -> None:
         """Wait for an element to be clickable and then click it."""
-        if isinstance(locator, tuple):
-            element = self.wait.until(EC.element_to_be_clickable(locator))
-            element.click()
-        else:
-            locator.click()
-        time.sleep(timeout)
+        try:
+            if isinstance(locator, tuple):
+                self.logger.info(f"Clicking element by {locator[0]}: '{locator[1]}'")
+                element = self.wait.until(EC.element_to_be_clickable(locator))
+                element.click()
+            else:
+                self.logger.info("Clicking WebElement directly.")
+                locator.click()
+            time.sleep(timeout)
+        except Exception as e:
+            self.logger.error(f"Failed to click element {locator}. Exception: {e}")
+            raise e
 
     def type_text(self, locator: tuple[str, str] | WebElement, text: str, timeout: float = Timeouts.DEFAULT_SLEEP_IN_SEC) -> None:
         """Wait for an element to be visible, clear its contents, and type text."""

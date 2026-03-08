@@ -41,15 +41,18 @@ class BaseClient:
     def request(self, method: str, endpoint: str, **kwargs) -> requests.Response:
         """
         Unified request method that constructs the full URL, logs the transaction, 
-        and executes the HTTP action.
+        and executes the HTTP action, with added error handling to catch network failures.
         """
         url = f"{self.base_url}{endpoint}"
         self._log_request(method, url, **kwargs)
         
-        response = self.session.request(method, url, **kwargs)
-        
-        self._log_response(response)
-        return response
+        try:
+            response = self.session.request(method, url, **kwargs)
+            self._log_response(response)
+            return response
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"HTTP Request failed during {method} {url}: {e}")
+            raise
 
     def get(self, endpoint: str, **kwargs) -> requests.Response:
         return self.request("GET", endpoint, **kwargs)
